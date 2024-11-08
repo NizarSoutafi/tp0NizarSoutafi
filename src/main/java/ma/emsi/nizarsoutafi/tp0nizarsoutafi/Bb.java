@@ -116,17 +116,22 @@ public class Bb implements Serializable {
             facesContext.addMessage(null, message);
             return null;
         }
-        // Entourer la réponse avec "||".
-        this.reponse = "||";
-        // Si la conversation n'a pas encore commencé, ajouter le rôle système au début de la réponse
+        String[] words = question.split(" ");
+        StringBuilder acronym = new StringBuilder("||");
+
+        for (String word : words) {
+            if (!word.isBlank()) {
+                acronym.append(word.charAt(0)); // prend la première lettre de chaque mot
+            }
+        }
+
+        this.reponse = acronym.toString() + "||";
+
         if (this.conversation.isEmpty()) {
-            // Ajouter le rôle système au début de la réponse
-            this.reponse += systemRole.toUpperCase(Locale.FRENCH) + "\n";
-            // Invalide le bouton pour changer le rôle système
+            this.reponse = "||" + systemRole.toUpperCase(Locale.FRENCH) + "\n" + this.reponse;
             this.systemRoleChangeable = false;
         }
-        this.reponse += question.toLowerCase(Locale.FRENCH) + "||";
-        // La conversation contient l'historique des questions-réponses depuis le début.
+
         afficherConversation();
         return null;
     }
